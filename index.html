@@ -3,37 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Birthday Adventure Quest</title>
+    <title>Birthday Adventure + Meme Vault</title>
     <style>
       :root {
-        --bg-1: #fff7d6;
-        --bg-2: #ffe3ef;
-        --bg-3: #dff7ff;
-        --gold: #ffc857;
-        --gold-deep: #ff9f1c;
-        --rose: #ff5fa2;
-        --rose-deep: #d93d82;
-        --navy: #1f3b62;
-        --mint: #72d6b8;
-        --peach: #ffd1b3;
-        --cream: #fffef7;
-        --shadow: rgba(28, 48, 83, 0.16);
+        --bg1: #12081b;
+        --bg2: #1f1030;
+        --bg3: #2f1d46;
+        --card: rgba(255, 255, 255, 0.08);
+        --card-strong: rgba(255, 255, 255, 0.12);
+        --text: #fdf6ff;
+        --muted: #d9c7e9;
+        --pink: #ff5ab9;
+        --pink-2: #ff9cd7;
+        --violet: #9c7bff;
+        --cyan: #88f0ff;
+        --gold: #ffd86d;
+        --lime: #b7ff8f;
+        --red: #ff7169;
+        --shadow: rgba(0, 0, 0, 0.28);
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
-      html {
-        scroll-behavior: smooth;
-      }
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-        color: var(--navy);
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: radial-gradient(circle at top, rgba(160, 105, 255, 0.2), transparent 25%),
+                    linear-gradient(135deg, var(--bg1), var(--bg2) 40%, var(--bg3));
+        color: var(--text);
         overflow-x: hidden;
       }
 
@@ -41,779 +41,960 @@
         content: "";
         position: fixed;
         inset: 0;
-        background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6) 0 2px, transparent 2px),
-          radial-gradient(circle at 80% 18%, rgba(255,255,255,0.5) 0 2px, transparent 2px),
-          radial-gradient(circle at 50% 80%, rgba(255,255,255,0.5) 0 2px, transparent 2px);
-        background-size: 200px 200px;
         pointer-events: none;
-        opacity: 0.6;
+        background-image:
+          radial-gradient(circle at 10% 10%, rgba(255,255,255,0.16) 0 2px, transparent 2px),
+          radial-gradient(circle at 80% 15%, rgba(255,255,255,0.15) 0 2px, transparent 2px),
+          radial-gradient(circle at 50% 80%, rgba(255,255,255,0.14) 0 2px, transparent 2px);
+        background-size: 150px 150px;
       }
 
-      .screen {
-        display: none;
-        min-height: 100vh;
-        padding: 28px 20px 60px;
-        position: relative;
-        z-index: 1;
+      a { color: inherit; }
+
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(18px);
+        background: rgba(18, 8, 27, 0.72);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
       }
 
-      .screen.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .panel {
-        width: min(100%, 1100px);
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(8px);
-        border: 3px solid rgba(255, 255, 255, 0.7);
-        border-radius: 32px;
-        box-shadow: 0 28px 60px var(--shadow);
-        padding: 24px;
-      }
-
-      .topbar {
+      .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
         gap: 12px;
-        margin-bottom: 20px;
-      }
-
-      .nav-btn,
-      .quest-btn,
-      .treasure-node,
-      .choice-btn {
-        border: none;
-        border-radius: 999px;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        font-weight: 700;
+        flex-wrap: wrap;
+        padding: 18px 16px;
       }
 
       .nav-btn {
-        background: rgba(255, 255, 255, 0.7);
-        color: var(--navy);
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
         padding: 10px 18px;
-        border: 2px solid rgba(31, 59, 98, 0.08);
+        border-radius: 999px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
       }
 
-      .nav-btn:hover,
-      .quest-btn:hover,
-      .choice-btn:hover,
-      .treasure-node:hover,
-      .mystery-box:hover {
-        transform: translateY(-3px) scale(1.02);
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255,255,255,0.22);
       }
 
       .nav-btn.active {
-        background: linear-gradient(135deg, var(--gold), var(--gold-deep));
-        color: #221b18;
-        box-shadow: 0 12px 22px rgba(255, 159, 28, 0.35);
+        background: linear-gradient(135deg, var(--pink), var(--violet));
+        box-shadow: 0 10px 22px rgba(255, 90, 185, 0.38);
       }
 
-      .title {
-        text-align: center;
-        margin-bottom: 14px;
+      .hidden {
+        display: none !important;
       }
 
-      .title h1 {
-        font-size: clamp(2.5rem, 7vw, 5rem);
-        line-height: 1;
-        margin: 0;
-        color: var(--rose-deep);
-        letter-spacing: 0.04em;
-        text-shadow: 0 4px 12px rgba(217, 61, 130, 0.2);
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 34px 18px 60px;
+        display: none;
       }
 
-      .title p {
-        margin-top: 12px;
-        font-size: clamp(1rem, 2vw, 1.3rem);
-        color: rgba(31, 59, 98, 0.75);
+      .page.active {
+        display: block;
       }
 
-      .map-shell {
-        position: relative;
-        margin-top: 18px;
-        min-height: 560px;
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 22px;
+        align-items: center;
+        min-height: 620px;
+      }
+
+      .hero-copy,
+      .slideshow,
+      .vault-card,
+      .wish-card,
+      .game-panel,
+      .final-card {
+        background: var(--card);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 22px 55px var(--shadow);
         border-radius: 28px;
+      }
+
+      .hero-copy {
+        padding: 30px 26px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        color: var(--gold);
+        background: rgba(255, 216, 109, 0.1);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+      }
+
+      h1, h2, h3, p { margin-top: 0; }
+
+      .hero-copy h1 {
+        font-size: clamp(2.8rem, 6vw, 5.2rem);
+        line-height: 0.96;
+        margin-bottom: 16px;
+        letter-spacing: 0.04em;
+      }
+
+      .neon-name {
+        display: inline-block;
+        text-transform: uppercase;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        color: #fff;
+        text-shadow:
+          0 0 8px rgba(255,255,255,0.8),
+          0 0 16px rgba(255,90,185,0.9),
+          0 0 28px rgba(156,123,255,0.9),
+          0 0 52px rgba(88,240,255,0.7);
+        animation: glowPulse 1.6s ease-in-out infinite alternate;
+      }
+
+      @keyframes glowPulse {
+        from { filter: brightness(0.94); }
+        to { filter: brightness(1.15); }
+      }
+
+      .hero-copy p {
+        font-size: 1.08rem;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+      }
+
+      .primary-btn, .secondary-btn {
+        padding: 14px 22px;
+        border-radius: 999px;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--pink), var(--violet));
+        color: white;
+        box-shadow: 0 16px 32px rgba(255,90,185,0.28);
+      }
+
+      .secondary-btn {
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        border: 1px solid rgba(255,255,255,0.12);
+      }
+
+      .primary-btn:hover, .secondary-btn:hover {
+        transform:translateY(-2px);
+      }
+
+      .slideshow {
+        position: relative;
         overflow: hidden;
-        background:
-          linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
-          linear-gradient(135deg, rgba(255, 224, 168, 0.65), rgba(191, 233, 255, 0.7), rgba(255, 211, 228, 0.7));
-        border: 2px solid rgba(123, 126, 196, 0.15);
-      }
-
-      .map-shell::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.22) 1px, transparent 1px),
-          radial-gradient(circle at 20% 20%, rgba(255, 122, 173, 0.2), transparent 35%),
-          radial-gradient(circle at 80% 25%, rgba(123, 190, 255, 0.22), transparent 35%),
-          radial-gradient(circle at 50% 75%, rgba(255, 201, 89, 0.22), transparent 35%);
-        background-size: 55px 55px, 55px 55px, auto, auto, auto;
-        opacity: 0.8;
-      }
-
-      .map-route {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-      }
-
-      .map-route::before,
-      .map-route::after {
-        content: "";
-        position: absolute;
-        border: 3px dashed rgba(98, 76, 156, 0.45);
-        border-radius: 50%;
-        transform: rotate(-10deg);
-      }
-
-      .map-route::before {
-        width: 72%;
-        height: 46%;
-        left: 14%;
-        top: 16%;
-      }
-
-      .map-route::after {
-        width: 52%;
-        height: 32%;
-        right: 10%;
-        bottom: 16%;
-        transform: rotate(16deg);
-      }
-
-      .treasure-node {
-        position: absolute;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, #fff7c2, var(--gold) 52%, var(--gold-deep) 100%);
-        box-shadow: 0 0 0 8px rgba(255, 201, 89, 0.24), 0 0 24px rgba(255, 159, 28, 0.5);
-        transform: translate(-50%, -50%);
-        z-index: 2;
+        min-height: 520px;
+        padding: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .treasure-node::before {
-        content: attr(data-label);
+      .slide {
         position: absolute;
-        bottom: calc(100% + 12px);
-        left: 50%;
-        transform: translateX(-50%);
-        white-space: nowrap;
-        background: rgba(31, 59, 98, 0.88);
-        color: white;
-        font-size: 0.72rem;
-        padding: 7px 10px;
-        border-radius: 999px;
+        inset: 18px;
+        padding: 22px;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transform: translateX(20px) scale(0.98);
+        transition: opacity 0.45s ease, transform 0.45s ease;
+        background: linear-gradient(135deg, rgba(255, 90, 185, 0.25), rgba(156, 123, 255, 0.2));
+        border: 1px solid rgba(255,255,255,0.08);
       }
 
-      .treasure-node:hover::before {
+      .slide.active {
         opacity: 1;
+        transform: translateX(0) scale(1);
       }
 
-      .map-marker-1 { left: 22%; top: 38%; }
-      .map-marker-2 { left: 49%; top: 52%; }
-      .map-marker-3 { left: 76%; top: 35%; }
-      .map-marker-4 { left: 62%; top: 72%; }
+      .slide .emoji {
+        font-size: 4rem;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
 
-      .map-legend {
+      .slide h3 {
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        margin-bottom: 10px;
+      }
+
+      .slide p {
+        font-size: 1.02rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .slide-controls {
         position: absolute;
-        right: 24px;
-        bottom: 20px;
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px solid rgba(31, 59, 98, 0.1);
-        border-radius: 18px;
-        padding: 10px 14px;
-        font-weight: 700;
-        color: var(--navy);
-        z-index: 3;
-      }
-
-      .story-card {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 22px;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
       }
 
-      .story-copy,
-      .story-visual {
-        border-radius: 28px;
-        padding: 24px;
+      .dot-row {
+        display: flex;
+        gap: 8px;
       }
 
-      .story-copy {
-        background: rgba(255,255,255,0.65);
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
       }
 
-      .story-copy h2,
-      .riddle-box h2,
-      .video-box h2,
-      .treasure-box h2 {
-        margin: 0 0 14px;
-        color: var(--rose-deep);
-        font-size: clamp(1.8rem, 3vw, 2.6rem);
+      .dot.active {
+        background: var(--gold);
+        box-shadow: 0 0 12px rgba(255,216,109,0.8);
       }
 
-      .story-copy p,
-      .riddle-box p,
-      .video-box p,
-      .treasure-box p,
-      .poem-box p,
-      .compliment-wrap p {
-        font-size: 1.08rem;
-        line-height: 1.8;
-        margin: 0 0 14px;
-      }
-
-      .story-visual {
-        background: linear-gradient(135deg, rgba(255, 223, 140, 0.5), rgba(255, 178, 214, 0.5));
-        min-height: 280px;
-        display: grid;
-        place-items: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .story-visual .badge {
-        position: absolute;
-        font-size: 82px;
-        animation: floaty 3s ease-in-out infinite alternate;
-      }
-
-      .story-visual .badge:nth-child(2) { transform: translate(-90px, 20px); animation-delay: 0.6s; }
-      .story-visual .badge:nth-child(3) { transform: translate(80px, -40px); animation-delay: 1.2s; }
-
-      @keyframes floaty {
-        0% { transform: translateY(0) rotate(0deg); }
-        100% { transform: translateY(-18px) rotate(7deg); }
-      }
-
-      .quest-btn,
-      .choice-btn {
-        background: linear-gradient(135deg, var(--rose), var(--rose-deep));
-        color: white;
-        padding: 14px 22px;
-        box-shadow: 0 14px 28px rgba(217, 61, 130, 0.28);
-        margin-top: 14px;
-      }
-
-      .choice-btn {
-        background: linear-gradient(135deg, var(--gold), var(--gold-deep));
-        color: #291f1a;
-        box-shadow: 0 12px 24px rgba(255, 159, 28, 0.25);
-      }
-
-      .riddle-box,
-      .video-box,
-      .treasure-box {
-        background: rgba(255,255,255,0.72);
-        border-radius: 28px;
-        padding: 28px;
-        width: min(100%, 860px);
-      }
-
-      .riddle-ask {
-        display: grid;
-        grid-template-columns: 1fr 180px;
-        gap: 12px;
-        margin-top: 18px;
-      }
-
-      input[type="text"] {
-        width: 100%;
-        background: rgba(255,255,255,0.92);
-        border: 2px solid rgba(31, 59, 98, 0.12);
-        border-radius: 16px;
-        padding: 16px 18px;
-        font-size: 1rem;
-        color: var(--navy);
-      }
-
-      .riddle-status {
-        margin-top: 16px;
-        min-height: 24px;
-        font-weight: 700;
-      }
-
-      .success {
-        color: #13866d;
-      }
-
-      .error {
-        color: #b12a4d;
-      }
-
-      .mystery-wrap {
-        display: grid;
-        gap: 18px;
-        justify-items: center;
-      }
-
-      .mystery-box {
-        width: min(100%, 420px);
-        min-height: 230px;
+      .arrow-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
         border: none;
-        border-radius: 28px;
-        background: linear-gradient(135deg, #f6c26e, #ff9a8b 50%, #e86acd);
-        box-shadow: 0 18px 40px rgba(143, 78, 102, 0.25);
-        position: relative;
-        padding: 20px 18px;
+        background: rgba(255,255,255,0.1);
+        color: var(--text);
+        font-size: 1.3rem;
         cursor: pointer;
-        overflow: hidden;
       }
 
-      .mystery-box::before,
-      .mystery-box::after {
-        content: "";
-        position: absolute;
-        border-radius: 18px;
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 18px;
       }
 
-      .mystery-box::before {
-        inset: 14px 18px 38px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
       }
 
-      .mystery-box::after {
-        inset: auto 12px 12px 12px;
-        height: 22px;
-        background: rgba(86, 34, 27, 0.15);
-      }
-
-      .mystery-box .box-emoji {
-        font-size: 68px;
-        position: relative;
-        z-index: 1;
-        display: block;
-        margin-top: 10px;
-      }
-
-      .mystery-box .box-label {
-        position: relative;
-        z-index: 1;
-        display: inline-block;
-        margin-top: 10px;
-        padding: 6px 14px;
+      .pill {
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.04);
+        padding: 8px 12px;
         border-radius: 999px;
-        background: rgba(255,255,255,0.18);
-        font-weight: 800;
+        color: var(--muted);
+        font-size: 0.8rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
       }
 
-      .compliment-wrap {
-        width: min(100%, 760px);
-        background: rgba(255,255,255,0.78);
-        border-radius: 26px;
-        padding: 26px;
-        display: none;
+      .vault-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 18px;
       }
 
-      .compliment-wrap.visible {
-        display: block;
+      .vault-card {
+        padding: 22px 18px;
       }
 
-      .compliment-wrap img {
-        width: min(100%, 480px);
-        display: block;
-        border-radius: 24px;
-        margin: 0 auto 18px;
-        box-shadow: 0 18px 34px rgba(92, 66, 72, 0.2);
+      .vault-card .emoji {
+        font-size: 2.6rem;
+        margin-bottom: 10px;
       }
 
-      .video-shell {
-        width: min(100%, 820px);
-        margin-top: 18px;
-        background: rgba(255,255,255,0.75);
-        border-radius: 26px;
+      .vault-card h3 {
+        margin-bottom: 10px;
+      }
+
+      .vault-card p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .wish-wall {
+        display: grid;
+        gap: 14px;
+        max-height: 650px;
+        overflow-y: auto;
+        padding-right: 8px;
+      }
+
+      .wish-card {
+        padding: 18px 20px;
+        border-left: 5px solid var(--pink);
+      }
+
+      .wish-card p {
+        margin: 0;
+        color: var(--text);
+        font-size: 1.08rem;
+        line-height: 1.7;
+      }
+
+      .wish-card strong {
+        color: var(--gold);
+      }
+
+      .game-wrap {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 20px;
+      }
+
+      .game-panel {
         padding: 16px;
       }
 
-      video {
-        width: 100%;
-        display: block;
-        border-radius: 20px;
-        max-height: 55vh;
-        object-fit: cover;
-        background: #111827;
-      }
-
-      .fireworks-wrap {
+      .game-area {
         position: relative;
         width: 100%;
-        min-height: 430px;
-        border-radius: 28px;
-        background: linear-gradient(180deg, rgba(13, 17, 41, 0.84), rgba(29, 41, 57, 0.9));
+        height: 430px;
+        background: linear-gradient(180deg, rgba(71, 124, 255, 0.2), rgba(25, 27, 52, 0.75));
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 22px;
         overflow: hidden;
-        border: 2px solid rgba(255,255,255,0.12);
       }
 
-      #fireworks {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
-      .poem-box {
-        position: relative;
-        z-index: 2;
-        width: min(100%, 820px);
-        padding: 22px 18px 28px;
-        background: rgba(255, 255, 255, 0.18);
-        backdrop-filter: blur(3px);
-        border-radius: 26px;
-      }
-
-      .poem-box h2 {
-        margin: 0 0 16px;
-        font-size: clamp(2rem, 5vw, 3rem);
-        color: #fff1a7;
-        text-align: center;
-      }
-
-      .poem-box p {
-        font-size: clamp(1.04rem, 2vw, 1.4rem);
-        line-height: 1.9;
-        color: #fffaf0;
-        text-align: center;
-      }
-
-      .bouquet {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        gap: 18px;
-        min-height: 180px;
-        margin-top: 18px;
-        z-index: 2;
-      }
-
-      .stem {
-        position: relative;
-        width: 12px;
-        height: 100px;
-        background: linear-gradient(180deg, #77d17a, #2c9b5d);
-        border-radius: 999px;
-      }
-
-      .flower {
-        position: absolute;
-        bottom: 80px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: radial-gradient(circle, #fff8b0 15%, #ffc2ec 26%, #ff7bbc 52%, #f25aa3 100%);
-        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.18), 0 0 26px rgba(255, 125, 200, 0.42);
-        animation: sway 4s ease-in-out infinite alternate;
-      }
-
-      .flower::before,
-      .flower::after {
+      .game-area::before {
         content: "";
         position: absolute;
         inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 38px 38px;
+      }
+
+      .player {
+        position: absolute;
+        left: 50%;
+        bottom: 14px;
+        width: 82px;
+        height: 82px;
+        transform: translateX(-50%);
+        display: grid;
+        place-items: center;
+        font-size: 3rem;
+        z-index: 3;
+        filter: drop-shadow(0 0 16px rgba(255,216,109,0.45));
+      }
+
+      .slice {
+        position: absolute;
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        font-size: 1.8rem;
+        z-index: 2;
+        animation: wobble 1.2s ease-in-out infinite alternate;
+      }
+
+      @keyframes wobble {
+        from { transform: rotate(-6deg); }
+        to { transform: rotate(6deg); }
+      }
+
+      .game-meta {
+        padding: 22px 18px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .score-box {
+        padding: 18px 16px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 18px;
+      }
+
+      .score-box h3 {
+        margin-bottom: 12px;
+      }
+
+      .score-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+      }
+
+      .score-row strong {
+        color: var(--gold);
+        font-size: 1.5rem;
+      }
+
+      .game-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .game-controls button {
+        flex: 1;
+        min-width: 110px;
+      }
+
+      .hidden-page-banner {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(183,255,143,0.12);
+        color: var(--lime);
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      .final-card {
+        padding: 28px 22px 30px;
+        background: linear-gradient(135deg, rgba(255, 90, 185, 0.22), rgba(156, 123, 255, 0.2), rgba(255, 216, 109, 0.12));
+      }
+
+      .birthday-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(65, 35, 82, 0.82), rgba(25, 21, 48, 0.95));
+        border: 1px solid rgba(255,255,255,0.16);
+        padding: 26px 22px 10px;
+      }
+
+      .birthday-card::before,
+      .birthday-card::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
         border-radius: 50%;
-        background: inherit;
+        background: rgba(255, 90, 185, 0.15);
+        filter: blur(20px);
       }
 
-      .flower::before { transform: rotate(45deg); }
-      .flower::after { transform: rotate(-45deg); }
+      .birthday-card::before { top: -90px; right: -80px; }
+      .birthday-card::after { bottom: -90px; left: -80px; }
 
-      .flower.pink { background: radial-gradient(circle, #fff8b0 15%, #ffc2ec 26%, #ff7bbc 52%, #f25aa3 100%); }
-      .flower.yellow { background: radial-gradient(circle, #fff3bf 15%, #ffe589 26%, #ffd75e 52%, #ffb51c 100%); }
-      .flower.blue { background: radial-gradient(circle, #dcf5ff 15%, #b9efff 26%, #7ecdf2 52%, #4fa0d6 100%); }
-      .flower.purple { background: radial-gradient(circle, #f4dcff 15%, #dea8ff 26%, #b875ff 52%, #7d49d9 100%); }
-
-      .flower:nth-child(1) { left: 50%; }
-      .flower:nth-child(2) { left: 57%; }
-      .flower:nth-child(3) { left: 44%; }
-      .flower:nth-child(4) { left: 62%; }
-      .flower:nth-child(5) { left: 38%; }
-
-      @keyframes sway {
-        0% { transform: rotate(-8deg) translateY(0); }
-        100% { transform: rotate(8deg) translateY(-8px); }
+      .birthday-card h2 {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        font-size: clamp(2.2rem, 6vw, 4rem);
+        margin-bottom: 12px;
+        color: #fff4ae;
+        text-shadow: 0 0 14px rgba(255,216,109,0.7);
       }
 
-      @media (max-width: 760px) {
-        .story-card { grid-template-columns: 1fr; }
-        .riddle-ask { grid-template-columns: 1fr; }
-        .map-shell { min-height: 440px; }
-        .title h1 { letter-spacing: 0.02em; }
-        .treasure-node::before { font-size: 0.62rem; }
+      .birthday-card p {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: #f4edff;
+        line-height: 1.9;
+        font-size: 1.08rem;
+        max-width: 760px;
+        margin: 0 auto 18px;
+      }
+
+      .heart-row {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        font-size: 2rem;
+        margin: 18px 0 8px;
+        animation: pulse 1.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes pulse {
+        from { transform: scale(0.96); }
+        to { transform: scale(1.08); }
+      }
+
+      .confetti {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      @media (max-width: 920px) {
+        .hero, .game-wrap { grid-template-columns: 1fr; }
+        .vault-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
+      }
+
+      @media (max-width: 620px) {
+        .nav-inner { justify-content: flex-start; }
+        .vault-grid { grid-template-columns: 1fr; }
+        .game-area { height: 360px; }
       }
     </style>
   </head>
   <body>
-    <div class="screen active" data-screen="home">
-      <div class="panel">
-        <div class="topbar">
-          <button class="nav-btn active" data-screen="home">Home</button>
-          <button class="nav-btn" data-screen="clue1">Clue 1</button>
-          <button class="nav-btn" data-screen="clue2">Clue 2</button>
-          <button class="nav-btn" data-screen="clue3">Clue 3</button>
-          <button class="nav-btn" data-screen="treasure">Treasure Room</button>
-        </div>
-
-        <div class="title">
-          <h1>Birthday Quest</h1>
-          <p>Follow the glowing treasure spots and uncover the sweetest surprise.</p>
-        </div>
-
-        <div class="map-shell">
-          <div class="map-route"></div>
-          <button class="treasure-node map-marker-1" data-label="Sunrise Trail" data-screen="clue1" aria-label="Open Clue 1"></button>
-          <button class="treasure-node map-marker-2" data-label="Moonbeam Grotto" data-screen="clue1" aria-label="Open Clue 1"></button>
-          <button class="treasure-node map-marker-3" data-label="Giggly Corner" data-screen="clue1" aria-label="Open Clue 1"></button>
-          <button class="treasure-node map-marker-4" data-label="Treasure Gate" data-screen="clue1" aria-label="Open Clue 1"></button>
-          <div class="map-legend">✨ Tap the treasure marks</div>
-        </div>
+    <nav>
+      <div class="nav-inner">
+        <button class="nav-btn active" data-page="home">Home</button>
+        <button class="nav-btn" data-page="vault">Meme Vault</button>
+        <button class="nav-btn" data-page="wish">Wish Wall</button>
+        <button class="nav-btn" data-page="game">Mini Game</button>
+        <button class="nav-btn" id="finalNavBtn" data-page="final">Final Surprise</button>
       </div>
-    </div>
+    </nav>
 
-    <div class="screen" data-screen="clue1">
-      <div class="riddle-box">
-        <h2>Clue 1: The Riddle Map</h2>
-        <p>
-          “I brighten every room without needing a lantern, and I make even grumpy mornings feel lighter.
-          My secret lives in the way you make people feel at ease. What am I?”
-        </p>
-        <div class="riddle-ask">
-          <input id="riddleInput" type="text" placeholder="Type your guess here..." />
-          <button class="quest-btn" id="riddleSubmit">Unlock</button>
-        </div>
-        <div id="riddleStatus" class="riddle-status"></div>
-        <div style="margin-top: 18px; text-align: right;">
-          <button class="choice-btn" data-screen="clue2">Next clue →</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="screen" data-screen="clue2">
-      <div class="mystery-wrap">
-        <div class="panel" style="padding: 30px 20px; width: min(100%, 900px);">
-          <div class="topbar">
-            <button class="nav-btn" data-screen="home">Home</button>
-            <button class="nav-btn" data-screen="clue1">Clue 1</button>
-            <button class="nav-btn active" data-screen="clue2">Clue 2</button>
-            <button class="nav-btn" data-screen="clue3">Clue 3</button>
-            <button class="nav-btn" data-screen="treasure">Treasure Room</button>
+    <main>
+      <section class="page active" data-page="home">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">Birthday Bash</div>
+            <h1>
+              Happy Birthday<br />
+              <span class="neon-name" id="crushName">My Love</span>
+            </h1>
+            <p>
+              You are proof that joy has a face, a laugh, and a perfect smile. Today is for celebrating the
+              biggest source of chaos, comfort, and cute little miracles in my life.
+            </p>
+            <div class="cta">
+              <button class="primary-btn" data-page="vault">Open the Meme Vault</button>
+              <button class="secondary-btn" data-page="game">Play the Cake Game</button>
+            </div>
           </div>
 
-          <div class="title">
-            <h1 style="font-size: clamp(2rem, 5vw, 4rem);">Hidden Treasure</h1>
-          </div>
+          <div class="slideshow" aria-label="Birthday meme slideshow">
+            <div class="slide active">
+              <div class="emoji">🫶</div>
+              <h3>“You’re the mood.”</h3>
+              <p>When the world is noisy, you’re the calm. When life feels heavy, you’re the reason it gets lighter.</p>
+            </div>
+            <div class="slide">
+              <div class="emoji">😂</div>
+              <h3>“You are my favorite distraction.”</h3>
+              <p>Delaying responsibilities is fine when you’re the reason I’m smiling across the room.</p>
+            </div>
+            <div class="slide">
+              <div class="emoji">🎂</div>
+              <h3>“This is your year.”</h3>
+              <p>More cake, more joy, more little things that remind me how lucky I am to know you.</p>
+            </div>
 
-          <button class="mystery-box" id="mysteryBox" aria-label="Open the treasure box">
-            <span class="box-emoji">🎁</span>
-            <span class="box-label">Tap me</span>
-          </button>
-
-          <div class="compliment-wrap" id="complimentWrap">
-            <img src="https://media.giphy.com/media/3ornjXII4g1S0y4V4Y/giphy.gif" alt="Funny birthday reaction GIF" />
-            <p>
-              Your laugh is so bright it could power a whole sunrise. You are the rare kind of magic that makes
-              ordinary days feel like a celebration.
-            </p>
-            <p>
-              You are sweet, hilarious, lovable, and ridiculously easy to adore. Honestly, the world is a better place
-              just because you exist.
-            </p>
-            <div style="text-align: right; margin-top: 18px;">
-              <button class="choice-btn" data-screen="clue3">Next clue →</button>
+            <div class="slide-controls">
+              <div class="dot-row">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <div>
+                <button class="arrow-btn" id="prevSlide" aria-label="Previous slide">←</button>
+                <button class="arrow-btn" id="nextSlide" aria-label="Next slide">→</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="screen" data-screen="clue3">
-      <div class="video-box">
-        <h2>Clue 3: Birthday Wish Video</h2>
-        <p>Press play and listen to the message hidden in the celebration.</p>
-        <div class="video-shell">
-          <video controls autoplay muted playsinline poster="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=80">
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+      <section class="page" data-page="vault">
+        <div class="section-head">
+          <h2>Meme Vault</h2>
+          <span class="pill">Sweet + chaotic vibes</span>
         </div>
-        <div style="text-align: right; margin-top: 18px;">
-          <button class="choice-btn" data-screen="treasure">Open the Treasure Room →</button>
-        </div>
-      </div>
-    </div>
 
-    <div class="screen" data-screen="treasure">
-      <div class="treasure-box">
-        <h2>Treasure Room</h2>
-        <div class="fireworks-wrap">
-          <canvas id="fireworks"></canvas>
-          <div class="poem-box">
-            <h2>For My Favorite Explorer</h2>
+        <div class="vault-grid">
+          <article class="vault-card">
+            <div class="emoji">🫠</div>
+            <h3>“Just a normal Tuesday”</h3>
+            <p>Me: casually doing life. Also me: dramatically checking my phone for your message like it’s the main event.</p>
+          </article>
+
+          <article class="vault-card">
+            <div class="emoji">💖</div>
+            <h3>“Emotionally available”</h3>
+            <p>Too cute to be real. Too sweet to be normal. You somehow make even a random text feel like a reward.</p>
+          </article>
+
+          <article class="vault-card">
+            <div class="emoji">😂</div>
+            <h3>“What’s my type?”</h3>
+            <p>Apparently: warm smile, kind heart, and the power to make me instantly forget what I was doing.</p>
+          </article>
+
+          <article class="vault-card">
+            <div class="emoji">🎁</div>
+            <h3>“Best gift ever”</h3>
+            <p>My heart already feels like the birthday present: wrapped in joy, decorated with affection, and impossible to ignore.</p>
+          </article>
+
+          <article class="vault-card">
+            <div class="emoji">🌙</div>
+            <h3>“Sleep mode off”</h3>
+            <p>When you’re around, my brain becomes a full-time fan club with zero chill. It’s proud of you 24/7.</p>
+          </article>
+
+          <article class="vault-card">
+            <div class="emoji">🍰</div>
+            <h3>“Birthday goals”</h3>
+            <p>One cake, one smile, one reason to laugh until my stomach hurts. That’s the whole plan for your special day.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" data-page="wish">
+        <div class="section-head">
+          <h2>Wish Wall</h2>
+          <span class="pill">A thousand tiny compliments</span>
+        </div>
+
+        <div class="wish-wall">
+          <div class="wish-card"><p><strong>You’re so</strong> beautiful that even the sun looks overworked trying to compete.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> kind that your kindness feels like a warm blanket on a stressful day.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> funny that even my silence becomes a smile when you say something silly.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> thoughtful that the smallest gestures feel like love letters.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> cute that I’m genuinely concerned your face has magical powers.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> smart that you make intelligence look effortless and adorable.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> loved that it’s almost unfair how much joy you bring into everyone’s life.</p></div>
+          <div class="wish-card"><p><strong>You’re so</strong> precious that even my most dramatic moments calm down just hearing your name.</p></div>
+        </div>
+      </section>
+
+      <section class="page" data-page="game">
+        <div class="section-head">
+          <h2>Mini Game: Catch the Cake</h2>
+          <span class="pill">Win to unlock the final surprise</span>
+        </div>
+
+        <div class="game-wrap">
+          <div class="game-panel">
+            <div class="game-area" id="gameArea">
+              <div class="player" id="player">🧑‍🚀</div>
+            </div>
+          </div>
+
+          <div class="game-meta">
+            <div class="score-box">
+              <h3>Scoreboard</h3>
+              <div class="score-row"><span>Cake caught</span> <strong id="scoreValue">0</strong></div>
+              <div class="score-row"><span>Goal</span> <strong>10</strong></div>
+            </div>
+
+            <div class="score-box">
+              <h3>Controls</h3>
+              <p style="margin:0; color: var(--muted); line-height: 1.7;">Move left and right, catch the falling cake slices before they hit the floor. You need 10 to unlock the final birthday surprise.</p>
+            </div>
+
+            <div class="game-controls">
+              <button class="primary-btn" id="startGame">Start Game</button>
+              <button class="secondary-btn" id="restartGame">Restart</button>
+            </div>
+
+            <div class="score-box">
+              <h3>Status</h3>
+              <p id="gameStatus" style="margin:0; color: var(--muted); line-height: 1.7;">Ready to play the cake chase.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="final">
+        <div class="final-card">
+          <div class="hidden-page-banner">Final Surprise Unlocked</div>
+          <div class="birthday-card">
+            <canvas class="confetti" id="confettiCanvas"></canvas>
+            <h2>Happy Birthday, Love! 🎉</h2>
             <p>
-              To the one who turns ordinary days into little adventures,<br />
-              you are the warmest light in the quietest corners of the world.<br /><br />
-              Your smile is a treasure map, leading everyone home to joy.<br />
-              Your laughter is the sweetest music, and your heart is the kindest place to land.<br /><br />
-              May your year sparkle with wonder, love, and the kind of happiness<br />
-              that feels like fireworks in the middle of the night.<br /><br />
-              Happy Birthday, beautiful soul — may you always be adored,<br />
-              celebrated, and deeply loved.
+              You deserve every bit of laughter, peace, and magic the universe can offer. You are the kind of person who makes life feel softer, brighter, and a whole lot more beautiful. I hope this year brings you endless reasons to smile, cozy moments to treasure, and dreams that feel just as big and wonderful as your heart.
             </p>
-          </div>
-
-          <div class="bouquet" aria-label="Virtual bouquet">
-            <div class="stem"></div>
-            <div class="flower pink" style="left: 34%;"></div>
-            <div class="flower yellow" style="left: 42%;"></div>
-            <div class="flower blue" style="left: 53%;"></div>
-            <div class="flower purple" style="left: 61%;"></div>
-            <div class="flower pink" style="left: 69%;"></div>
+            <p>
+              Thank you for being you — for the sweetness, the warmth, the fun, and the way you turn ordinary days into memories worth keeping. I hope your birthday is filled with love, cake, laughter, and all the little surprises you never knew you needed.
+            </p>
+            <div class="heart-row">💖 💌 🎂 💫</div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <script>
-      const screens = document.querySelectorAll('.screen');
+      const crushName = 'My Love';
+      document.getElementById('crushName').textContent = crushName;
+
+      const pages = document.querySelectorAll('.page');
       const navButtons = document.querySelectorAll('.nav-btn');
-      const choiceButtons = document.querySelectorAll('.choice-btn');
-      const treasureNodes = document.querySelectorAll('.treasure-node');
+      const finalNavBtn = document.getElementById('finalNavBtn');
+      const gameWon = { status: false };
 
-      function showScreen(name) {
-        screens.forEach(screen => {
-          screen.classList.toggle('active', screen.dataset.screen === name);
+      function showPage(pageName) {
+        pages.forEach(page => {
+          page.classList.toggle('active', page.dataset.page === pageName);
         });
 
-        navButtons.forEach(button => {
-          button.classList.toggle('active', button.dataset.screen === name);
+        navButtons.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.page === pageName);
         });
-      }
 
-      navButtons.forEach(button => {
-        button.addEventListener('click', () => showScreen(button.dataset.screen));
-      });
-
-      choiceButtons.forEach(button => {
-        button.addEventListener('click', () => showScreen(button.dataset.screen));
-      });
-
-      treasureNodes.forEach(node => {
-        node.addEventListener('click', () => showScreen(node.dataset.screen));
-      });
-
-      const riddleForm = document.getElementById('riddleSubmit');
-      const riddleInput = document.getElementById('riddleInput');
-      const riddleStatus = document.getElementById('riddleStatus');
-
-      riddleForm.addEventListener('click', () => {
-        const guess = riddleInput.value.trim().toLowerCase();
-        if (!guess) {
-          riddleStatus.textContent = 'You need a guess before the treasure can reveal itself.';
-          riddleStatus.className = 'riddle-status error';
+        if (!gameWon.status && pageName === 'final') {
+          showPage('home');
           return;
         }
+      }
 
-        if (guess.includes('smile') || guess.includes('your smile') || guess.includes('smiles')) {
-          riddleStatus.textContent = 'Correct! The trail leads to a little burst of joy. Keep going!';
-          riddleStatus.className = 'riddle-status success';
-          const nextButton = document.querySelector('[data-screen="clue2"]');
-          nextButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          riddleStatus.textContent = 'Not quite — think of the thing that makes every room feel lighter.';
-          riddleStatus.className = 'riddle-status error';
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => showPage(btn.dataset.page));
+      });
+
+      document.querySelectorAll('[data-page="vault"]').forEach(btn => {
+        btn.addEventListener('click', () => showPage('vault'));
+      });
+      document.querySelectorAll('[data-page="game"]').forEach(btn => {
+        btn.addEventListener('click', () => showPage('game'));
+      });
+
+      const slides = [...document.querySelectorAll('.slide')];
+      const dots = [...document.querySelectorAll('.dot')];
+      let slideIndex = 0;
+
+      function renderSlide(index) {
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+      }
+
+      document.getElementById('nextSlide').addEventListener('click', () => {
+        slideIndex = (slideIndex + 1) % slides.length;
+        renderSlide(slideIndex);
+      });
+
+      document.getElementById('prevSlide').addEventListener('click', () => {
+        slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+        renderSlide(slideIndex);
+      });
+
+      setInterval(() => {
+        slideIndex = (slideIndex + 1) % slides.length;
+        renderSlide(slideIndex);
+      }, 3200);
+
+      const gameArea = document.getElementById('gameArea');
+      const player = document.getElementById('player');
+      const scoreValue = document.getElementById('scoreValue');
+      const gameStatus = document.getElementById('gameStatus');
+      const startGameBtn = document.getElementById('startGame');
+      const restartGameBtn = document.getElementById('restartGame');
+
+      let playerX = 50;
+      let score = 0;
+      let timer = null;
+      let slices = [];
+      let keys = { left: false, right: false };
+      let gameStarted = false;
+
+      function clampPlayer() {
+        const maxX = gameArea.clientWidth - 82;
+        playerX = Math.max(0, Math.min(playerX, maxX));
+        player.style.left = `${playerX + 41}px`;
+      }
+
+      function setPlayerPosition(x) {
+        playerX = x;
+        clampPlayer();
+      }
+
+      function createSlice() {
+        const slice = document.createElement('div');
+        slice.className = 'slice';
+        slice.textContent = '🍰';
+        const x = Math.random() * (gameArea.clientWidth - 42);
+        slice.style.left = `${x}px`;
+        slice.style.top = '0px';
+        gameArea.appendChild(slice);
+
+        slices.push({
+          el: slice,
+          x,
+          y: 0,
+          vy: 3 + Math.random() * 1.7,
+          width: 42,
+          height: 42
+        });
+      }
+
+      function updateGame() {
+        if (!gameStarted) return;
+
+        if (keys.left) setPlayerPosition(playerX - 11);
+        if (keys.right) setPlayerPosition(playerX + 11);
+
+        if (Math.random() < 0.03) {
+          createSlice();
         }
+
+        for (let i = slices.length - 1; i >= 0; i--) {
+          const sliceObj = slices[i];
+          sliceObj.y += sliceObj.vy;
+          sliceObj.el.style.top = `${sliceObj.y}px`;
+
+          const playerRect = player.getBoundingClientRect();
+          const sliceRect = sliceObj.el.getBoundingClientRect();
+          const overlap = !(sliceRect.right < playerRect.left || sliceRect.left > playerRect.right || sliceRect.bottom < playerRect.top || sliceRect.top > playerRect.bottom);
+
+          if (overlap) {
+            score += 1;
+            scoreValue.textContent = score;
+            sliceObj.el.remove();
+            slices.splice(i, 1);
+
+            if (score >= 10) {
+              winGame();
+              return;
+            }
+          }
+
+          if (sliceObj.y + 42 > gameArea.clientHeight) {
+            sliceObj.el.remove();
+            slices.splice(i, 1);
+          }
+        }
+      }
+
+      function startGame() {
+        if (gameWon.status) return;
+        gameStarted = true;
+        score = 0;
+        scoreValue.textContent = '0';
+        gameStatus.textContent = 'Catching cakes! Keep going...';
+        startGameBtn.textContent = 'Game Running';
+        startGameBtn.disabled = true;
+
+        if (timer) clearInterval(timer);
+        timer = setInterval(updateGame, 18);
+      }
+
+      function restartGame() {
+        if (timer) clearInterval(timer);
+        gameStarted = false;
+        gameWon.status = false;
+        score = 0;
+        scoreValue.textContent = '0';
+        startGameBtn.disabled = false;
+        startGameBtn.textContent = 'Start Game';
+        gameStatus.textContent = 'Ready to play the cake chase.';
+
+        slices.forEach(slice => slice.el.remove());
+        slices = [];
+        setPlayerPosition(gameArea.clientWidth / 2 - 41);
+        finalNavBtn.classList.remove('active');
+      }
+
+      function winGame() {
+        gameStarted = false;
+        gameWon.status = true;
+        if (timer) clearInterval(timer);
+        gameStatus.textContent = 'You caught enough cake! The final surprise is unlocked.';
+        startGameBtn.disabled = true;
+        startGameBtn.textContent = 'Winner!';
+        finalNavBtn.classList.add('active');
+        showPage('final');
+      }
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') keys.left = true;
+        if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') keys.right = true;
       });
 
-      const mysteryBox = document.getElementById('mysteryBox');
-      const complimentWrap = document.getElementById('complimentWrap');
-
-      mysteryBox.addEventListener('click', () => {
-        complimentWrap.classList.add('visible');
-        mysteryBox.innerHTML = '<span class="box-emoji">✨</span><span class="box-label">Revealed!</span>';
+      window.addEventListener('keyup', (event) => {
+        if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') keys.left = false;
+        if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') keys.right = false;
       });
 
-      const canvas = document.getElementById('fireworks');
+      document.querySelectorAll('.nav-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          if (button.dataset.page === 'final' && !gameWon.status) {
+            showPage('home');
+            return;
+          }
+          showPage(button.dataset.page);
+        });
+      });
+
+      startGameBtn.addEventListener('click', startGame);
+      restartGameBtn.addEventListener('click', restartGame);
+
+      setPlayerPosition(gameArea.clientWidth / 2 - 41);
+      window.addEventListener('resize', () => setPlayerPosition(playerX));
+
+      const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
-      let fireworks = [];
+      let confetti = [];
 
-      function resizeCanvas() {
-        const wrapper = canvas.parentElement;
-        canvas.width = wrapper.clientWidth;
-        canvas.height = wrapper.clientHeight;
+      function resizeConfetti() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
       }
 
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
-
-      function randomBetween(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-
-      function launchBurst(x, y) {
-        const count = 26;
-        for (let i = 0; i < count; i++) {
-          const angle = (Math.PI * 2 * i) / count;
-          const velocity = randomBetween(1.4, 3.8);
-          fireworks.push({
-            x,
-            y,
-            dx: Math.cos(angle) * velocity,
-            dy: Math.sin(angle) * velocity,
-            life: randomBetween(50, 86),
-            size: randomBetween(2, 5),
-            color: ['#ffd166', '#ff5fa2', '#7ce7ff', '#c8ff87', '#cdb4ff'][Math.floor(Math.random() * 5)]
+      function burstConfetti() {
+        for (let i = 0; i < 140; i++) {
+          confetti.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            dx: (Math.random() - 0.5) * 7,
+            dy: (Math.random() - 0.5) * 5 - 2,
+            size: Math.random() * 4 + 3,
+            color: ['#ff5ab9', '#ffd86d', '#88f0ff', '#b7ff8f', '#9c7bff'][Math.floor(Math.random() * 5)],
+            life: 120 + Math.random() * 40,
           });
         }
       }
 
-      function animateFireworks() {
+      function animateConfetti() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = confetti.length - 1; i >= 0; i--) {
+          const piece = confetti[i];
+          piece.x += piece.dx;
+          piece.y += piece.dy;
+          piece.dy += 0.07;
+          piece.life -= 1;
 
-        if (Math.random() < 0.03) {
-          launchBurst(randomBetween(40, canvas.width - 40), randomBetween(90, canvas.height - 80));
+          ctx.fillStyle = piece.color;
+          ctx.fillRect(piece.x, piece.y, piece.size, piece.size * 1.6);
+
+          if (piece.life <= 0) confetti.splice(i, 1);
         }
-
-        for (let i = fireworks.length - 1; i >= 0; i--) {
-          const p = fireworks[i];
-
-          p.x += p.dx * 2.1;
-          p.y += p.dy * 2.1 + 0.18;
-          p.life -= 1;
-
-          ctx.beginPath();
-          ctx.fillStyle = p.color;
-          ctx.shadowColor = p.color;
-          ctx.shadowBlur = 15;
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-
-          if (p.life <= 0) {
-            fireworks.splice(i, 1);
-          }
-        }
-
-        ctx.shadowBlur = 0;
-        requestAnimationFrame(animateFireworks);
+        requestAnimationFrame(animateConfetti);
       }
 
-      animateFireworks();
+      resizeConfetti();
+      window.addEventListener('resize', resizeConfetti);
+      burstConfetti();
+      animateConfetti();
+      setInterval(burstConfetti, 1800);
     </script>
   </body>
 </html>
