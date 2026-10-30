@@ -1,333 +1,819 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Special Birthday Surprise 💗</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Adventure Quest</title>
+    <style>
+      :root {
+        --bg-1: #fff7d6;
+        --bg-2: #ffe3ef;
+        --bg-3: #dff7ff;
+        --gold: #ffc857;
+        --gold-deep: #ff9f1c;
+        --rose: #ff5fa2;
+        --rose-deep: #d93d82;
+        --navy: #1f3b62;
+        --mint: #72d6b8;
+        --peach: #ffd1b3;
+        --cream: #fffef7;
+        --shadow: rgba(28, 48, 83, 0.16);
+      }
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+      * {
+        box-sizing: border-box;
+      }
 
-body {
-  font-family: 'Trebuchet MS', sans-serif;
-  background: linear-gradient(135deg, #ffe1ed, #f9d5ff, #fff0d9);
-  color: #743b60;
-  text-align: center;
-  overflow-x: hidden;
-  min-height: 100vh;
-}
+      html {
+        scroll-behavior: smooth;
+      }
 
-section {
-  min-height: 100vh;
-  padding: 70px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+        color: var(--navy);
+        overflow-x: hidden;
+      }
 
-h1 {
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-  color: #e34c91;
-  animation: pop 1.5s infinite alternate;
-}
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6) 0 2px, transparent 2px),
+          radial-gradient(circle at 80% 18%, rgba(255,255,255,0.5) 0 2px, transparent 2px),
+          radial-gradient(circle at 50% 80%, rgba(255,255,255,0.5) 0 2px, transparent 2px);
+        background-size: 200px 200px;
+        pointer-events: none;
+        opacity: 0.6;
+      }
 
-h2 {
-  color: #d94b91;
-  margin-bottom: 20px;
-}
+      .screen {
+        display: none;
+        min-height: 100vh;
+        padding: 28px 20px 60px;
+        position: relative;
+        z-index: 1;
+      }
 
-p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  max-width: 550px;
-}
+      .screen.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-button {
-  border: none;
-  padding: 15px 28px;
-  border-radius: 30px;
-  background: #f05a9d;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 15px;
-  box-shadow: 0 5px 15px #e78ab5;
-  transition: .3s;
-}
+      .panel {
+        width: min(100%, 1100px);
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(8px);
+        border: 3px solid rgba(255, 255, 255, 0.7);
+        border-radius: 32px;
+        box-shadow: 0 28px 60px var(--shadow);
+        padding: 24px;
+      }
 
-button:hover {
-  transform: scale(1.1);
-  background: #d83b83;
-}
+      .topbar {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
 
-.card {
-  background: rgba(255,255,255,.8);
-  padding: 35px 25px;
-  border-radius: 25px;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 10px 35px #e8a8c5;
-  margin: 20px auto;
-}
+      .nav-btn,
+      .quest-btn,
+      .treasure-node,
+      .choice-btn {
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        font-weight: 700;
+      }
 
-.hidden {
-  display: none;
-}
+      .nav-btn {
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--navy);
+        padding: 10px 18px;
+        border: 2px solid rgba(31, 59, 98, 0.08);
+      }
 
-.cake {
-  font-size: 100px;
-  margin: 20px;
-  animation: bounce 1s infinite alternate;
-}
+      .nav-btn:hover,
+      .quest-btn:hover,
+      .choice-btn:hover,
+      .treasure-node:hover,
+      .mystery-box:hover {
+        transform: translateY(-3px) scale(1.02);
+      }
 
-.heart {
-  position: fixed;
-  bottom: -30px;
-  animation: floatUp linear infinite;
-  pointer-events: none;
-  z-index: 2;
-}
+      .nav-btn.active {
+        background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+        color: #221b18;
+        box-shadow: 0 12px 22px rgba(255, 159, 28, 0.35);
+      }
 
-@keyframes floatUp {
-  to {
-    transform: translateY(-110vh) rotate(360deg);
-    opacity: 0;
-  }
-}
+      .title {
+        text-align: center;
+        margin-bottom: 14px;
+      }
 
-@keyframes bounce {
-  to { transform: translateY(-15px); }
-}
+      .title h1 {
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        line-height: 1;
+        margin: 0;
+        color: var(--rose-deep);
+        letter-spacing: 0.04em;
+        text-shadow: 0 4px 12px rgba(217, 61, 130, 0.2);
+      }
 
-@keyframes pop {
-  to { transform: scale(1.05); }
-}
+      .title p {
+        margin-top: 12px;
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        color: rgba(31, 59, 98, 0.75);
+      }
 
-#confetti {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 10;
-}
+      .map-shell {
+        position: relative;
+        margin-top: 18px;
+        min-height: 560px;
+        border-radius: 28px;
+        overflow: hidden;
+        background:
+          linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+          linear-gradient(135deg, rgba(255, 224, 168, 0.65), rgba(191, 233, 255, 0.7), rgba(255, 211, 228, 0.7));
+        border: 2px solid rgba(123, 126, 196, 0.15);
+      }
 
-.gallery {
-  font-size: 50px;
-  margin: 20px;
-}
+      .map-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.22) 1px, transparent 1px),
+          radial-gradient(circle at 20% 20%, rgba(255, 122, 173, 0.2), transparent 35%),
+          radial-gradient(circle at 80% 25%, rgba(123, 190, 255, 0.22), transparent 35%),
+          radial-gradient(circle at 50% 75%, rgba(255, 201, 89, 0.22), transparent 35%);
+        background-size: 55px 55px, 55px 55px, auto, auto, auto;
+        opacity: 0.8;
+      }
 
-footer {
-  padding: 25px;
-  color: #a34b78;
-}
-</style>
-</head>
+      .map-route {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
 
-<body>
+      .map-route::before,
+      .map-route::after {
+        content: "";
+        position: absolute;
+        border: 3px dashed rgba(98, 76, 156, 0.45);
+        border-radius: 50%;
+        transform: rotate(-10deg);
+      }
 
-<canvas id="confetti"></canvas>
+      .map-route::before {
+        width: 72%;
+        height: 46%;
+        left: 14%;
+        top: 16%;
+      }
 
-<section>
-  <div style="font-size:60px">🎀💗🎀</div>
-  <h1>Oye!!</h1>
-  <h2>Happy birthday phulei</h2>
-  <p>
-    Today is not just another day...
-    It's the day someone incredibly cute entered this world.
-    (Yes, unfortunately, it's you 😂)
-  </p>
-  <button onclick="startSurprise()">Open Your Surprise 🎁</button>
-  <p>Scroll down for more happiness ↓</p>
-</section>
+      .map-route::after {
+        width: 52%;
+        height: 32%;
+        right: 10%;
+        bottom: 16%;
+        transform: rotate(16deg);
+      }
 
-<section>
-  <div class="card">
-    <h2>🎂 A Little Birthday Magic</h2>
-    <div class="cake">🎂</div>
-    <p>
-      Make a wish! But don't wish for too much...
-      The universe is already busy handling your attitude. 😂
-    </p>
-    <button onclick="celebrate()">Blow Your Candles 🕯️</button>
-    <p id="wish"></p>
-  </div>
-</section>
+      .treasure-node {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #fff7c2, var(--gold) 52%, var(--gold-deep) 100%);
+        box-shadow: 0 0 0 8px rgba(255, 201, 89, 0.24), 0 0 24px rgba(255, 159, 28, 0.5);
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-<section>
-  <div class="card">
-    <h2>😂 A Few Things About You</h2>
-    <p>
-      1. You're cute. Annoyingly cute, actually. 🤭<br><br>
-      2. Your smile deserves its own fan club. 😌<br><br>
-      3. You probably don't know how special you are.<br><br>
-      4. Stop being so adorable. It's distracting. 🙄💗
-    </p>
-    <button onclick="funnyMessage()">One More Secret 🤫</button>
-    <p id="funny"></p>
-  </div>
-</section>
+      .treasure-node::before {
+        content: attr(data-label);
+        position: absolute;
+        bottom: calc(100% + 12px);
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        background: rgba(31, 59, 98, 0.88);
+        color: white;
+        font-size: 0.72rem;
+        padding: 7px 10px;
+        border-radius: 999px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
 
-<section>
-  <div class="card">
-    <h2>💌 A Little Letter For You</h2>
-    <div style="font-size:65px">💌</div>
-    <p>
-      I have something to tell you...
-    </p>
-    <button onclick="openLetter()">Open My Letter 💗</button>
+      .treasure-node:hover::before {
+        opacity: 1;
+      }
 
-    <div id="letter" class="hidden">
-      <p>
-        Hey Birthday Star! 🌟<br><br>
-        I hope your day is filled with laughter,
-        beautiful memories, endless happiness,
-        and all the little things that make you smile.<br><br>
+      .map-marker-1 { left: 22%; top: 38%; }
+      .map-marker-2 { left: 49%; top: 52%; }
+      .map-marker-3 { left: 76%; top: 35%; }
+      .map-marker-4 { left: 62%; top: 72%; }
 
-        You deserve so much happiness.
-        Keep being your wonderful, silly,
-        slightly crazy self. 😂<br><br>
+      .map-legend {
+        position: absolute;
+        right: 24px;
+        bottom: 20px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(31, 59, 98, 0.1);
+        border-radius: 18px;
+        padding: 10px 14px;
+        font-weight: 700;
+        color: var(--navy);
+        z-index: 3;
+      }
 
-        And just so you know...
-        Someone is secretly very happy
-        that you exist. ❤️<br><br>
+      .story-card {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        align-items: center;
+      }
 
-        Have the most magical birthday! 🥹
-      </p>
+      .story-copy,
+      .story-visual {
+        border-radius: 28px;
+        padding: 24px;
+      }
+
+      .story-copy {
+        background: rgba(255,255,255,0.65);
+      }
+
+      .story-copy h2,
+      .riddle-box h2,
+      .video-box h2,
+      .treasure-box h2 {
+        margin: 0 0 14px;
+        color: var(--rose-deep);
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+      }
+
+      .story-copy p,
+      .riddle-box p,
+      .video-box p,
+      .treasure-box p,
+      .poem-box p,
+      .compliment-wrap p {
+        font-size: 1.08rem;
+        line-height: 1.8;
+        margin: 0 0 14px;
+      }
+
+      .story-visual {
+        background: linear-gradient(135deg, rgba(255, 223, 140, 0.5), rgba(255, 178, 214, 0.5));
+        min-height: 280px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .story-visual .badge {
+        position: absolute;
+        font-size: 82px;
+        animation: floaty 3s ease-in-out infinite alternate;
+      }
+
+      .story-visual .badge:nth-child(2) { transform: translate(-90px, 20px); animation-delay: 0.6s; }
+      .story-visual .badge:nth-child(3) { transform: translate(80px, -40px); animation-delay: 1.2s; }
+
+      @keyframes floaty {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(-18px) rotate(7deg); }
+      }
+
+      .quest-btn,
+      .choice-btn {
+        background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+        color: white;
+        padding: 14px 22px;
+        box-shadow: 0 14px 28px rgba(217, 61, 130, 0.28);
+        margin-top: 14px;
+      }
+
+      .choice-btn {
+        background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+        color: #291f1a;
+        box-shadow: 0 12px 24px rgba(255, 159, 28, 0.25);
+      }
+
+      .riddle-box,
+      .video-box,
+      .treasure-box {
+        background: rgba(255,255,255,0.72);
+        border-radius: 28px;
+        padding: 28px;
+        width: min(100%, 860px);
+      }
+
+      .riddle-ask {
+        display: grid;
+        grid-template-columns: 1fr 180px;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        background: rgba(255,255,255,0.92);
+        border: 2px solid rgba(31, 59, 98, 0.12);
+        border-radius: 16px;
+        padding: 16px 18px;
+        font-size: 1rem;
+        color: var(--navy);
+      }
+
+      .riddle-status {
+        margin-top: 16px;
+        min-height: 24px;
+        font-weight: 700;
+      }
+
+      .success {
+        color: #13866d;
+      }
+
+      .error {
+        color: #b12a4d;
+      }
+
+      .mystery-wrap {
+        display: grid;
+        gap: 18px;
+        justify-items: center;
+      }
+
+      .mystery-box {
+        width: min(100%, 420px);
+        min-height: 230px;
+        border: none;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #f6c26e, #ff9a8b 50%, #e86acd);
+        box-shadow: 0 18px 40px rgba(143, 78, 102, 0.25);
+        position: relative;
+        padding: 20px 18px;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .mystery-box::before,
+      .mystery-box::after {
+        content: "";
+        position: absolute;
+        border-radius: 18px;
+      }
+
+      .mystery-box::before {
+        inset: 14px 18px 38px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+      }
+
+      .mystery-box::after {
+        inset: auto 12px 12px 12px;
+        height: 22px;
+        background: rgba(86, 34, 27, 0.15);
+      }
+
+      .mystery-box .box-emoji {
+        font-size: 68px;
+        position: relative;
+        z-index: 1;
+        display: block;
+        margin-top: 10px;
+      }
+
+      .mystery-box .box-label {
+        position: relative;
+        z-index: 1;
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.18);
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .compliment-wrap {
+        width: min(100%, 760px);
+        background: rgba(255,255,255,0.78);
+        border-radius: 26px;
+        padding: 26px;
+        display: none;
+      }
+
+      .compliment-wrap.visible {
+        display: block;
+      }
+
+      .compliment-wrap img {
+        width: min(100%, 480px);
+        display: block;
+        border-radius: 24px;
+        margin: 0 auto 18px;
+        box-shadow: 0 18px 34px rgba(92, 66, 72, 0.2);
+      }
+
+      .video-shell {
+        width: min(100%, 820px);
+        margin-top: 18px;
+        background: rgba(255,255,255,0.75);
+        border-radius: 26px;
+        padding: 16px;
+      }
+
+      video {
+        width: 100%;
+        display: block;
+        border-radius: 20px;
+        max-height: 55vh;
+        object-fit: cover;
+        background: #111827;
+      }
+
+      .fireworks-wrap {
+        position: relative;
+        width: 100%;
+        min-height: 430px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(13, 17, 41, 0.84), rgba(29, 41, 57, 0.9));
+        overflow: hidden;
+        border: 2px solid rgba(255,255,255,0.12);
+      }
+
+      #fireworks {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .poem-box {
+        position: relative;
+        z-index: 2;
+        width: min(100%, 820px);
+        padding: 22px 18px 28px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(3px);
+        border-radius: 26px;
+      }
+
+      .poem-box h2 {
+        margin: 0 0 16px;
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: #fff1a7;
+        text-align: center;
+      }
+
+      .poem-box p {
+        font-size: clamp(1.04rem, 2vw, 1.4rem);
+        line-height: 1.9;
+        color: #fffaf0;
+        text-align: center;
+      }
+
+      .bouquet {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 18px;
+        min-height: 180px;
+        margin-top: 18px;
+        z-index: 2;
+      }
+
+      .stem {
+        position: relative;
+        width: 12px;
+        height: 100px;
+        background: linear-gradient(180deg, #77d17a, #2c9b5d);
+        border-radius: 999px;
+      }
+
+      .flower {
+        position: absolute;
+        bottom: 80px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #fff8b0 15%, #ffc2ec 26%, #ff7bbc 52%, #f25aa3 100%);
+        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.18), 0 0 26px rgba(255, 125, 200, 0.42);
+        animation: sway 4s ease-in-out infinite alternate;
+      }
+
+      .flower::before,
+      .flower::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: inherit;
+      }
+
+      .flower::before { transform: rotate(45deg); }
+      .flower::after { transform: rotate(-45deg); }
+
+      .flower.pink { background: radial-gradient(circle, #fff8b0 15%, #ffc2ec 26%, #ff7bbc 52%, #f25aa3 100%); }
+      .flower.yellow { background: radial-gradient(circle, #fff3bf 15%, #ffe589 26%, #ffd75e 52%, #ffb51c 100%); }
+      .flower.blue { background: radial-gradient(circle, #dcf5ff 15%, #b9efff 26%, #7ecdf2 52%, #4fa0d6 100%); }
+      .flower.purple { background: radial-gradient(circle, #f4dcff 15%, #dea8ff 26%, #b875ff 52%, #7d49d9 100%); }
+
+      .flower:nth-child(1) { left: 50%; }
+      .flower:nth-child(2) { left: 57%; }
+      .flower:nth-child(3) { left: 44%; }
+      .flower:nth-child(4) { left: 62%; }
+      .flower:nth-child(5) { left: 38%; }
+
+      @keyframes sway {
+        0% { transform: rotate(-8deg) translateY(0); }
+        100% { transform: rotate(8deg) translateY(-8px); }
+      }
+
+      @media (max-width: 760px) {
+        .story-card { grid-template-columns: 1fr; }
+        .riddle-ask { grid-template-columns: 1fr; }
+        .map-shell { min-height: 440px; }
+        .title h1 { letter-spacing: 0.02em; }
+        .treasure-node::before { font-size: 0.62rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen active" data-screen="home">
+      <div class="panel">
+        <div class="topbar">
+          <button class="nav-btn active" data-screen="home">Home</button>
+          <button class="nav-btn" data-screen="clue1">Clue 1</button>
+          <button class="nav-btn" data-screen="clue2">Clue 2</button>
+          <button class="nav-btn" data-screen="clue3">Clue 3</button>
+          <button class="nav-btn" data-screen="treasure">Treasure Room</button>
+        </div>
+
+        <div class="title">
+          <h1>Birthday Quest</h1>
+          <p>Follow the glowing treasure spots and uncover the sweetest surprise.</p>
+        </div>
+
+        <div class="map-shell">
+          <div class="map-route"></div>
+          <button class="treasure-node map-marker-1" data-label="Sunrise Trail" data-screen="clue1" aria-label="Open Clue 1"></button>
+          <button class="treasure-node map-marker-2" data-label="Moonbeam Grotto" data-screen="clue1" aria-label="Open Clue 1"></button>
+          <button class="treasure-node map-marker-3" data-label="Giggly Corner" data-screen="clue1" aria-label="Open Clue 1"></button>
+          <button class="treasure-node map-marker-4" data-label="Treasure Gate" data-screen="clue1" aria-label="Open Clue 1"></button>
+          <div class="map-legend">✨ Tap the treasure marks</div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
 
-<section>
-  <div class="card">
-    <h2>🎉 Your Birthday Wish List</h2>
-    <div class="gallery">🌸 🧸 💕 🌈 🎀</div>
-    <p>
-      May you get:<br><br>
-      ✨ Unlimited happiness<br>
-      🍫 Unlimited chocolates<br>
-      💰 Unlimited money<br>
-      😂 Unlimited reasons to laugh<br>
-      💗 And someone who makes you smile
-    </p>
-  </div>
-</section>
+    <div class="screen" data-screen="clue1">
+      <div class="riddle-box">
+        <h2>Clue 1: The Riddle Map</h2>
+        <p>
+          “I brighten every room without needing a lantern, and I make even grumpy mornings feel lighter.
+          My secret lives in the way you make people feel at ease. What am I?”
+        </p>
+        <div class="riddle-ask">
+          <input id="riddleInput" type="text" placeholder="Type your guess here..." />
+          <button class="quest-btn" id="riddleSubmit">Unlock</button>
+        </div>
+        <div id="riddleStatus" class="riddle-status"></div>
+        <div style="margin-top: 18px; text-align: right;">
+          <button class="choice-btn" data-screen="clue2">Next clue →</button>
+        </div>
+      </div>
+    </div>
 
-<section>
-  <div class="card">
-    <h1>One Last Thing... 💗</h1>
-    <p>
-      If I could give you one thing today,
-      it would be the ability to see yourself
-      through the eyes of people who adore you.
-      You'd understand how special you are.
-    </p>
-    <h2 style="margin-top:25px">
-      Happy Birthday, Cutie! 🥹🎂
-    </h2>
-    <p>Stay happy. Stay crazy. Stay YOU. ❤️</p>
-    <button onclick="celebrate()">Celebrate Again!! 🎊</button>
-  </div>
-</section>
+    <div class="screen" data-screen="clue2">
+      <div class="mystery-wrap">
+        <div class="panel" style="padding: 30px 20px; width: min(100%, 900px);">
+          <div class="topbar">
+            <button class="nav-btn" data-screen="home">Home</button>
+            <button class="nav-btn" data-screen="clue1">Clue 1</button>
+            <button class="nav-btn active" data-screen="clue2">Clue 2</button>
+            <button class="nav-btn" data-screen="clue3">Clue 3</button>
+            <button class="nav-btn" data-screen="treasure">Treasure Room</button>
+          </div>
 
-<footer>
-  Made with a little bit of craziness and lots of 💗
-  <br>Just for you ✨
-</footer>
+          <div class="title">
+            <h1 style="font-size: clamp(2rem, 5vw, 4rem);">Hidden Treasure</h1>
+          </div>
 
-<script>
-// Floating hearts
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = ["💗","💕","💖","💘","✨"][
-    Math.floor(Math.random()*5)
-  ];
-  heart.style.left = Math.random()*100 + "vw";
-  heart.style.fontSize = (15 + Math.random()*25) + "px";
-  heart.style.animationDuration = (4 + Math.random()*5) + "s";
-  document.body.appendChild(heart);
+          <button class="mystery-box" id="mysteryBox" aria-label="Open the treasure box">
+            <span class="box-emoji">🎁</span>
+            <span class="box-label">Tap me</span>
+          </button>
 
-  setTimeout(() => heart.remove(), 9000);
-}
-setInterval(createHeart, 400);
+          <div class="compliment-wrap" id="complimentWrap">
+            <img src="https://media.giphy.com/media/3ornjXII4g1S0y4V4Y/giphy.gif" alt="Funny birthday reaction GIF" />
+            <p>
+              Your laugh is so bright it could power a whole sunrise. You are the rare kind of magic that makes
+              ordinary days feel like a celebration.
+            </p>
+            <p>
+              You are sweet, hilarious, lovable, and ridiculously easy to adore. Honestly, the world is a better place
+              just because you exist.
+            </p>
+            <div style="text-align: right; margin-top: 18px;">
+              <button class="choice-btn" data-screen="clue3">Next clue →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-// Confetti animation
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-let pieces = [];
+    <div class="screen" data-screen="clue3">
+      <div class="video-box">
+        <h2>Clue 3: Birthday Wish Video</h2>
+        <p>Press play and listen to the message hidden in the celebration.</p>
+        <div class="video-shell">
+          <video controls autoplay muted playsinline poster="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=80">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div style="text-align: right; margin-top: 18px;">
+          <button class="choice-btn" data-screen="treasure">Open the Treasure Room →</button>
+        </div>
+      </div>
+    </div>
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+    <div class="screen" data-screen="treasure">
+      <div class="treasure-box">
+        <h2>Treasure Room</h2>
+        <div class="fireworks-wrap">
+          <canvas id="fireworks"></canvas>
+          <div class="poem-box">
+            <h2>For My Favorite Explorer</h2>
+            <p>
+              To the one who turns ordinary days into little adventures,<br />
+              you are the warmest light in the quietest corners of the world.<br /><br />
+              Your smile is a treasure map, leading everyone home to joy.<br />
+              Your laughter is the sweetest music, and your heart is the kindest place to land.<br /><br />
+              May your year sparkle with wonder, love, and the kind of happiness<br />
+              that feels like fireworks in the middle of the night.<br /><br />
+              Happy Birthday, beautiful soul — may you always be adored,<br />
+              celebrated, and deeply loved.
+            </p>
+          </div>
 
-function celebrate() {
-  for(let i=0; i<200; i++) {
-    pieces.push({
-      x: Math.random()*canvas.width,
-      y: -20,
-      size: Math.random()*9+4,
-      speed: Math.random()*5+2,
-      color: ["#ff4f91","#ffd166","#b388ff",
-              "#70e1d0","#ff8b8b"][Math.floor(Math.random()*5)],
-      rotation: Math.random()*360
-    });
-  }
+          <div class="bouquet" aria-label="Virtual bouquet">
+            <div class="stem"></div>
+            <div class="flower pink" style="left: 34%;"></div>
+            <div class="flower yellow" style="left: 42%;"></div>
+            <div class="flower blue" style="left: 53%;"></div>
+            <div class="flower purple" style="left: 61%;"></div>
+            <div class="flower pink" style="left: 69%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  document.getElementById("wish").innerHTML =
-    "🎉 WISH GRANTED! May all your dreams come true! 💗";
+    <script>
+      const screens = document.querySelectorAll('.screen');
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const choiceButtons = document.querySelectorAll('.choice-btn');
+      const treasureNodes = document.querySelectorAll('.treasure-node');
 
-  setTimeout(() => {
-    document.getElementById("wish").innerHTML = "";
-  }, 4000);
-}
+      function showScreen(name) {
+        screens.forEach(screen => {
+          screen.classList.toggle('active', screen.dataset.screen === name);
+        });
 
-function animateConfetti() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+        navButtons.forEach(button => {
+          button.classList.toggle('active', button.dataset.screen === name);
+        });
+      }
 
-  pieces.forEach((p) => {
-    ctx.save();
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.rotation*Math.PI/180);
-    ctx.fillStyle = p.color;
-    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-    ctx.restore();
+      navButtons.forEach(button => {
+        button.addEventListener('click', () => showScreen(button.dataset.screen));
+      });
 
-    p.y += p.speed;
-    p.x += Math.sin(p.y/30);
-    p.rotation += 3;
-  });
+      choiceButtons.forEach(button => {
+        button.addEventListener('click', () => showScreen(button.dataset.screen));
+      });
 
-  pieces = pieces.filter(p => p.y < canvas.height+20);
-  requestAnimationFrame(animateConfetti);
-}
-animateConfetti();
+      treasureNodes.forEach(node => {
+        node.addEventListener('click', () => showScreen(node.dataset.screen));
+      });
 
-function startSurprise() {
-  celebrate();
-  document.querySelectorAll("section")[1].scrollIntoView({
-    behavior:"smooth"
-  });
-}
+      const riddleForm = document.getElementById('riddleSubmit');
+      const riddleInput = document.getElementById('riddleInput');
+      const riddleStatus = document.getElementById('riddleStatus');
 
-function openLetter() {
-  document.getElementById("letter").classList.toggle("hidden");
-  celebrate();
-}
+      riddleForm.addEventListener('click', () => {
+        const guess = riddleInput.value.trim().toLowerCase();
+        if (!guess) {
+          riddleStatus.textContent = 'You need a guess before the treasure can reveal itself.';
+          riddleStatus.className = 'riddle-status error';
+          return;
+        }
 
-function funnyMessage() {
-  document.getElementById("funny").innerHTML =
-    "🚨 WARNING: Your cuteness level is illegal. " +
-    "Please report to the nearest mirror immediately. 😂💗";
-}
-</script>
+        if (guess.includes('smile') || guess.includes('your smile') || guess.includes('smiles')) {
+          riddleStatus.textContent = 'Correct! The trail leads to a little burst of joy. Keep going!';
+          riddleStatus.className = 'riddle-status success';
+          const nextButton = document.querySelector('[data-screen="clue2"]');
+          nextButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          riddleStatus.textContent = 'Not quite — think of the thing that makes every room feel lighter.';
+          riddleStatus.className = 'riddle-status error';
+        }
+      });
 
-</body>
+      const mysteryBox = document.getElementById('mysteryBox');
+      const complimentWrap = document.getElementById('complimentWrap');
+
+      mysteryBox.addEventListener('click', () => {
+        complimentWrap.classList.add('visible');
+        mysteryBox.innerHTML = '<span class="box-emoji">✨</span><span class="box-label">Revealed!</span>';
+      });
+
+      const canvas = document.getElementById('fireworks');
+      const ctx = canvas.getContext('2d');
+      let fireworks = [];
+
+      function resizeCanvas() {
+        const wrapper = canvas.parentElement;
+        canvas.width = wrapper.clientWidth;
+        canvas.height = wrapper.clientHeight;
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      function randomBetween(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function launchBurst(x, y) {
+        const count = 26;
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count;
+          const velocity = randomBetween(1.4, 3.8);
+          fireworks.push({
+            x,
+            y,
+            dx: Math.cos(angle) * velocity,
+            dy: Math.sin(angle) * velocity,
+            life: randomBetween(50, 86),
+            size: randomBetween(2, 5),
+            color: ['#ffd166', '#ff5fa2', '#7ce7ff', '#c8ff87', '#cdb4ff'][Math.floor(Math.random() * 5)]
+          });
+        }
+      }
+
+      function animateFireworks() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (Math.random() < 0.03) {
+          launchBurst(randomBetween(40, canvas.width - 40), randomBetween(90, canvas.height - 80));
+        }
+
+        for (let i = fireworks.length - 1; i >= 0; i--) {
+          const p = fireworks[i];
+
+          p.x += p.dx * 2.1;
+          p.y += p.dy * 2.1 + 0.18;
+          p.life -= 1;
+
+          ctx.beginPath();
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 15;
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (p.life <= 0) {
+            fireworks.splice(i, 1);
+          }
+        }
+
+        ctx.shadowBlur = 0;
+        requestAnimationFrame(animateFireworks);
+      }
+
+      animateFireworks();
+    </script>
+  </body>
 </html>
