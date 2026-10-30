@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Special Birthday Surprise 💗</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Trebuchet MS', sans-serif;
+  background: linear-gradient(135deg, #ffe1ed, #f9d5ff, #fff0d9);
+  color: #743b60;
+  text-align: center;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+section {
+  min-height: 100vh;
+  padding: 70px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  color: #e34c91;
+  animation: pop 1.5s infinite alternate;
+}
+
+h2 {
+  color: #d94b91;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  max-width: 550px;
+}
+
+button {
+  border: none;
+  padding: 15px 28px;
+  border-radius: 30px;
+  background: #f05a9d;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 15px;
+  box-shadow: 0 5px 15px #e78ab5;
+  transition: .3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  background: #d83b83;
+}
+
+.card {
+  background: rgba(255,255,255,.8);
+  padding: 35px 25px;
+  border-radius: 25px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 35px #e8a8c5;
+  margin: 20px auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.cake {
+  font-size: 100px;
+  margin: 20px;
+  animation: bounce 1s infinite alternate;
+}
+
+.heart {
+  position: fixed;
+  bottom: -30px;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  to { transform: translateY(-15px); }
+}
+
+@keyframes pop {
+  to { transform: scale(1.05); }
+}
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.gallery {
+  font-size: 50px;
+  margin: 20px;
+}
+
+footer {
+  padding: 25px;
+  color: #a34b78;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<section>
+  <div style="font-size:60px">🎀💗🎀</div>
+  <h1>Oye!!</h1>
+  <h2>Happy birthday phulei</h2>
+  <p>
+    Today is not just another day...
+    It's the day someone incredibly cute entered this world.
+    (Yes, unfortunately, it's you 😂)
+  </p>
+  <button onclick="startSurprise()">Open Your Surprise 🎁</button>
+  <p>Scroll down for more happiness ↓</p>
+</section>
+
+<section>
+  <div class="card">
+    <h2>🎂 A Little Birthday Magic</h2>
+    <div class="cake">🎂</div>
+    <p>
+      Make a wish! But don't wish for too much...
+      The universe is already busy handling your attitude. 😂
+    </p>
+    <button onclick="celebrate()">Blow Your Candles 🕯️</button>
+    <p id="wish"></p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>😂 A Few Things About You</h2>
+    <p>
+      1. You're cute. Annoyingly cute, actually. 🤭<br><br>
+      2. Your smile deserves its own fan club. 😌<br><br>
+      3. You probably don't know how special you are.<br><br>
+      4. Stop being so adorable. It's distracting. 🙄💗
+    </p>
+    <button onclick="funnyMessage()">One More Secret 🤫</button>
+    <p id="funny"></p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>💌 A Little Letter For You</h2>
+    <div style="font-size:65px">💌</div>
+    <p>
+      I have something to tell you...
+    </p>
+    <button onclick="openLetter()">Open My Letter 💗</button>
+
+    <div id="letter" class="hidden">
+      <p>
+        Hey Birthday Star! 🌟<br><br>
+        I hope your day is filled with laughter,
+        beautiful memories, endless happiness,
+        and all the little things that make you smile.<br><br>
+
+        You deserve so much happiness.
+        Keep being your wonderful, silly,
+        slightly crazy self. 😂<br><br>
+
+        And just so you know...
+        Someone is secretly very happy
+        that you exist. ❤️<br><br>
+
+        Have the most magical birthday! 🥹
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>🎉 Your Birthday Wish List</h2>
+    <div class="gallery">🌸 🧸 💕 🌈 🎀</div>
+    <p>
+      May you get:<br><br>
+      ✨ Unlimited happiness<br>
+      🍫 Unlimited chocolates<br>
+      💰 Unlimited money<br>
+      😂 Unlimited reasons to laugh<br>
+      💗 And someone who makes you smile
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h1>One Last Thing... 💗</h1>
+    <p>
+      If I could give you one thing today,
+      it would be the ability to see yourself
+      through the eyes of people who adore you.
+      You'd understand how special you are.
+    </p>
+    <h2 style="margin-top:25px">
+      Happy Birthday, Cutie! 🥹🎂
+    </h2>
+    <p>Stay happy. Stay crazy. Stay YOU. ❤️</p>
+    <button onclick="celebrate()">Celebrate Again!! 🎊</button>
+  </div>
+</section>
+
+<footer>
+  Made with a little bit of craziness and lots of 💗
+  <br>Just for you ✨
+</footer>
+
+<script>
+// Floating hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = ["💗","💕","💖","💘","✨"][
+    Math.floor(Math.random()*5)
+  ];
+  heart.style.left = Math.random()*100 + "vw";
+  heart.style.fontSize = (15 + Math.random()*25) + "px";
+  heart.style.animationDuration = (4 + Math.random()*5) + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 9000);
+}
+setInterval(createHeart, 400);
+
+// Confetti animation
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+let pieces = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+function celebrate() {
+  for(let i=0; i<200; i++) {
+    pieces.push({
+      x: Math.random()*canvas.width,
+      y: -20,
+      size: Math.random()*9+4,
+      speed: Math.random()*5+2,
+      color: ["#ff4f91","#ffd166","#b388ff",
+              "#70e1d0","#ff8b8b"][Math.floor(Math.random()*5)],
+      rotation: Math.random()*360
+    });
+  }
+
+  document.getElementById("wish").innerHTML =
+    "🎉 WISH GRANTED! May all your dreams come true! 💗";
+
+  setTimeout(() => {
+    document.getElementById("wish").innerHTML = "";
+  }, 4000);
+}
+
+function animateConfetti() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  pieces.forEach((p) => {
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rotation*Math.PI/180);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+    ctx.restore();
+
+    p.y += p.speed;
+    p.x += Math.sin(p.y/30);
+    p.rotation += 3;
+  });
+
+  pieces = pieces.filter(p => p.y < canvas.height+20);
+  requestAnimationFrame(animateConfetti);
+}
+animateConfetti();
+
+function startSurprise() {
+  celebrate();
+  document.querySelectorAll("section")[1].scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+function openLetter() {
+  document.getElementById("letter").classList.toggle("hidden");
+  celebrate();
+}
+
+function funnyMessage() {
+  document.getElementById("funny").innerHTML =
+    "🚨 WARNING: Your cuteness level is illegal. " +
+    "Please report to the nearest mirror immediately. 😂💗";
+}
+</script>
+
+</body>
+</html>
